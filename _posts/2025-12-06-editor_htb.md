@@ -1,7 +1,7 @@
 ---
 title: "Editor — HackTheBox Writeup"
 description: EASY Difficulty
-date: 2025-12-18 12:00:00 +0000
+date: 2025-12-06 12:00:00 +0000
 categories: [Writeups, HackTheBox]
 tags: [Linux, Easy, Web, Path Injection, SUID, PrivEsc]
 image:
