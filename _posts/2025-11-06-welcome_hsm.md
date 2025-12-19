@@ -5,7 +5,7 @@ date: 2025-11-06 12:00:00 +0000
 categories: [Writeups, Hacksmarter Labs]
 tags: [Linux, Easy, Web, Path Injection, SUID, PrivEsc]
 image:
-  path: /assets/welcome_img/welcome_banner.png
+  path: /assets/welcome_img/welcome_banner.jpeg
 ---
 # Scope
 
