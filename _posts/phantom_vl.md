@@ -1,4 +1,11 @@
-# Phantom.vl
+---
+title: "Phantom.vl — VulnLabs Writeup"
+date: 2025-07-20 12:00:00 +0000
+categories: [Writeups, VulnLabs]
+tags: [Windows, Active Directory, RBCD, Veracrypt]
+image:
+  path: /assets/img/posts/phantom_banner.png
+---
 
 ![image.png](Phantom%20vl/image.png)
 
