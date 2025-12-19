@@ -1,4 +1,12 @@
-
+---
+title: "NorthBridge Systems — Hacksmarter Writeup"
+description: HARD Difficulty
+date: 2025-11-20 12:00:00 +0000
+categories: [Writeups, Hacksmarter Labs]
+tags: [Active Directory, Hard, , RBCD, DCSync, Backup Operators, AV Evasion]
+image:
+  path: /assets/northbridge_img/northbridge_banner.jpeg
+---
 
 # Scope & Objective
 
