@@ -1,5 +1,6 @@
 ---
-title: "Phantom.vl — VulnLabs Writeup"
+title: "Phantom.vl — VulnLabs"
+description: MEDIUM Difficulty
 date: 2025-07-20 12:00:00 +0000
 categories: [Writeups, VulnLabs]
 tags: [Windows, Active Directory, RBCD, Veracrypt]
