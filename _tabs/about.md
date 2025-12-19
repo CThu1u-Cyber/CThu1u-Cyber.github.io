@@ -1,8 +1,21 @@
 ---
 # the default layout is 'page'
+layout: page
+title: About
 icon: fas fa-info-circle
 order: 4
 ---
 
-> Add Markdown syntax content to file `_tabs/about.md`{: .filepath } and it will show up on this page.
-{: .prompt-tip }
+
+# Hello, I'm CThu1u!
+
+I am a **Cybersecurity Enthusiast** and **CTF player** dedicated to growing in the art of offensive security. What started as a hobby has evolved into a lifelong commitment to fostering growth—both for myself and the wider cybersecurity community. Each "Root" is an accomplishment that represents hours of troubleshooting, enumeration, and creative thinking. 
+
+This is only the beginning of my cybersecurity passion, and my goal is to showcase my progress in a way for others to follow along. 
+
+### Current HTB Rank
+[![CThu1u's HTB Badge](https://www.hackthebox.eu/badge/image/713079)](https://app.hackthebox.com/users/713079)
+
+### Certifications
+CEH | PJPT
+
