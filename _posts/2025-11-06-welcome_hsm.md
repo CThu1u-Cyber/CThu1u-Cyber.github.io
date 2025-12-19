@@ -1,9 +1,12 @@
-# Welcome (hacksmarter)
-
 ---
-
+title: "Welcome — Hacksmarter Writeup"
+description: EASY Difficulty
+date: 2025-11-06 12:00:00 +0000
+categories: [Writeups, Hacksmarter Labs]
+tags: [Linux, Easy, Web, Path Injection, SUID, PrivEsc]
+image:
+  path: /assets/welcome_img/welcome_banner.png
 ---
-
 # Scope
 
 You are a member of the Hack Smarter Red Team. During a phishing engagement, you were able to retrieve credentials to enumerate the environment, elvate your privileges, and demonstrate impact for the client.
@@ -262,7 +265,7 @@ Upon viewing all the files, there is one that’s `password protected`
 
 ‘**Welcome Start Guide.pdf**’:
 
-![image.png](Welcome%20(hacksmarter)/image.png)
+![image.png](/assets/welcome_img/image.png)
 
 ---
 
@@ -277,7 +280,7 @@ There is a tool we can use to crack the password that is protecting the file
 
 And we use `john` to crack it
 
-![image.png](Welcome%20(hacksmarter)/image%201.png)
+![image.png](/assets/welcome_img/image%201.png)
 
 ---
 
@@ -285,11 +288,11 @@ And we use `john` to crack it
 
 Upon opening the pdf, we do come across a temporary password. 
 
-![image.png](Welcome%20(hacksmarter)/image%202.png)
+![image.png](/assets/welcome_img/image%202.png)
 
 Since we have a list of users already, we can try to see if any of them failed to change their passwords. 
 
-![image.png](Welcome%20(hacksmarter)/image%203.png)
+![image.png](/assets/welcome_img/image%203.png)
 
 It seems the user `a.harris` failed to change their password, and now we have a new set of credentials!
 
@@ -301,17 +304,17 @@ We now have control over `a.harris`
 
 We find out this user has `GenericAll` over the user `i.park`
 
-![image.png](Welcome%20(hacksmarter)/image%204.png)
+![image.png](/assets/welcome_img/image%204.png)
 
 We can also take a look at the user `i.park` to see what outbound controls this user has.
 
 And find out that `i.park` has `ForceChangePassword` on both service accounts: `svc_web`, `svc_ca`
 
-![image.png](Welcome%20(hacksmarter)/image%205.png)
+![image.png](/assets/welcome_img/image%205.png)
 
 If we gain access to the account `svc_ca`, we could potentially abuse a vulnerability on this `ca-template` we have `enroll` rights over:
 
-![image.png](Welcome%20(hacksmarter)/image%206.png)
+![image.png](/assets/welcome_img/image%206.png)
 
 ---
 
@@ -327,7 +330,7 @@ Since the user `a.harris` has `genericAll` rights over the user `i.park` we coul
 > The recovered hash can be cracked offline using the tool of your choice.
 > 
 
-![image.png](Welcome%20(hacksmarter)/image%207.png)
+![image.png](/assets/welcome_img/image%207.png)
 
 We’ve obtained the user `i.park`'s password hash, which we can then crack using `hashcat`
 
@@ -341,7 +344,7 @@ Can’t crack the password, but since we have `GenericAll`, we can just force ch
 
 We can run `net rpc` for this to work:
 
-![image.png](Welcome%20(hacksmarter)/image%208.png)
+![image.png](/assets/welcome_img/image%208.png)
 
 ---
 
@@ -349,7 +352,7 @@ We can run `net rpc` for this to work:
 
 Since we have `forceChangePassword` over `svc_ca`, we can just run the same command for the new user. 
 
-![image.png](Welcome%20(hacksmarter)/image%209.png)
+![image.png](/assets/welcome_img/image%209.png)
 
 We are successful.
 
@@ -359,9 +362,9 @@ Now, we can run some ADCS Vulnerability Scanning using `certipy-ad`
 
 # Welcome-Template : ESC1 Vulnerability
 
-![image.png](Welcome%20(hacksmarter)/image%2010.png)
+![image.png](/assets/welcome_img/image%2010.png)
 
-![image.png](Welcome%20(hacksmarter)/image%2011.png)
+![image.png](/assets/welcome_img/image%2011.png)
 
 We do find out that the template `Welcome-Template` is vulnerable to `ESC1 : Enrollee supplies subject and template allows client authentication`
 
@@ -375,13 +378,13 @@ The vulnerability allows any low-level user to request a certifcate for any acco
 
 # Admin Impersonation : Abusing ESC1
 
-![image.png](Welcome%20(hacksmarter)/image%2012.png)
+![image.png](/assets/welcome_img/image%2012.png)
 
 We now have the administrator’s password hash!
 
 We can now try accessing the machine via `evil-winrm`
 
-![image.png](Welcome%20(hacksmarter)/image%2013.png)
+![image.png](/assets/welcome_img/image%2013.png)
 
 # We’ve PWN3D The Box!
 
