@@ -1,8 +1,4 @@
-# NorthBridge Systems (Hack Smarter Labs) (HARD Difficulty)
 
----
-
----
 
 # Scope & Objective
 
@@ -332,13 +328,13 @@ We don’t find any potential paths or Outbound controls that interest us and no
 
 We are able to RDP into the Jump Box as our initial user _securitytestingsvc
 
-![image.png](NorthBridge%20Systems%20(Hack%20Smarter%20Labs)%20(HARD%20Diff/image.png)
+![image.png](/assets/northbridge_img/image.png)
 
 Enumerating the File Explorer, we come across the `scripts` directory with some interesting findings.
 
 ### AD domain Backup
 
-![image.png](NorthBridge%20Systems%20(Hack%20Smarter%20Labs)%20(HARD%20Diff/d2c85e18-f30d-4693-ba14-99069b4326c0.png)
+![image.png](/assets/northbridge_img/d2c85e18-f30d-4693-ba14-99069b4326c0.png)
 
 We have a powershell script meant to streamline Active Directory Backups and was updated to replace hardcoded credentials. It also iterates how the password file is generated. 
 
@@ -346,9 +342,9 @@ However, what’s more interesting to us are the plaintext creds found in the Se
 
 ### Plaintext Credentials for _svrautomationsvc Service Account
 
-![image.png](NorthBridge%20Systems%20(Hack%20Smarter%20Labs)%20(HARD%20Diff/image%201.png)
+![image.png](/assets/northbridge_img/image%201.png)
 
-![image.png](NorthBridge%20Systems%20(Hack%20Smarter%20Labs)%20(HARD%20Diff/image%202.png)
+![image.png](/assets/northbridge_img/image%202.png)
 
 We can try validating this using `nxc`:
 
@@ -364,7 +360,7 @@ Running nxc against 2 targets ━━━━━━━━━━━━━━━━�
 
 ## Bloodhound Analysis : _svrautomationsvc
 
-![image.png](NorthBridge%20Systems%20(Hack%20Smarter%20Labs)%20(HARD%20Diff/image%203.png)
+![image.png](/assets/northbridge_img/image%203.png)
 
 ### WriteAccountRestrictions
 
@@ -538,7 +534,7 @@ This link shows how to dump the NTDS.dit after you’ve gained control of the DC
  impacket-secretsdump -hashes [redacted:redacted] -just-dc NORTHBRIDGE/'NORTHDC01$'@10.1.196.97
 ```
 
-![image.png](NorthBridge%20Systems%20(Hack%20Smarter%20Labs)%20(HARD%20Diff/image%204.png)
+![image.png](/assets/northbridge_img/image%204.png)
 
 ```fortran
 ┌──(root㉿BermudaDark)-[/home/cthulhu/hacksmarter/northbridge-systems]
