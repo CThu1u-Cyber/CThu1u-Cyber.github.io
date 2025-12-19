@@ -11,7 +11,7 @@ order: 4
 
 I am a **Cybersecurity Enthusiast** and **CTF player** dedicated to growing in the art of offensive security. What started as a hobby has evolved into a lifelong commitment to fostering growth—both for myself and the wider cybersecurity community. Each "Root" is an accomplishment that represents hours of troubleshooting, enumeration, and creative thinking. 
 
-This is only the beginning of my cybersecurity passion, and my goal is to showcase my progress in an enjoyable way.
+This is only the beginning of my cybersecurity career, and my goal is to showcase my progress in an enjoyable way.
 
 ### Current HTB Rank
 [![CThu1u's HTB Badge](https://www.hackthebox.eu/badge/image/713079)](https://app.hackthebox.com/users/713079)
