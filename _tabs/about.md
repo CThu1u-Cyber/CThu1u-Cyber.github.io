@@ -20,4 +20,4 @@ This is only the beginning of my cybersecurity career, and my goal is to showcas
 * **CEH**
 * **PJPT**
 
-> "The ocean of security is vast; the only way to navigate it is to never stop diving deeper..."
+> "The ocean of security is vast; the only way to navigate it is to never stop swimming..."
