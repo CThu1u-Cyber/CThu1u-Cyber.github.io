@@ -1,9 +1,12 @@
-# Editor
-
 ---
-
+title: "Editor — HackTheBox Writeup"
+description: EASY Difficulty
+date: 2025-12-18 12:00:00 +0000
+categories: [Writeups, HackTheBox]
+tags: [Linux, Easy, Web, Path Injection, SUID, PrivEsc]
+image:
+  path: /assets/Editor_img/editor_banner.png
 ---
-
 # Scope & Objective
 
 Target IP → 10.10.11.80
@@ -121,13 +124,13 @@ We do get one discovery but it’s not that interesting to us.
 
 Navigating to the initial webpage:
 
-![image.png](Editor/image.png)
+![image.png](/assets/Editor_img/image.png)
 
 Just kind of playing with the website, we don’t get any indication of a way in. We can check the port 8080 web server next.
 
 ## HTTP 8080 Enumeration
 
-![image.png](Editor/image%201.png)
+![image.png](/assets/Editor_img/image%201.png)
 
 Navigating to the website, we are redirected to this xwiki page. At the very bottom, we do notice a server version — **XWiki Debian 15.10.8**
 
@@ -165,13 +168,13 @@ Just do a simple copy paste on the raw file or do a git clone!
 
 Running the POC:
 
-![image.png](Editor/image%202.png)
+![image.png](/assets/Editor_img/image%202.png)
 
 ** Make sure you have a netcat listener running on the same port **
 
 ### Running `netcat` with a stable `tty shell`
 
-![image.png](Editor/image%203.png)
+![image.png](/assets/Editor_img/image%203.png)
 
 We now have initial access on the target machine!
 
@@ -179,7 +182,7 @@ We now have initial access on the target machine!
 
 Attempting to manually enumerate seemed redundent, since we don’t have sudo privileges and we don’t know of any xwiki files that might be able to help us, however, we can find out with a simple google search:
 
-![image.png](Editor/image%204.png)
+![image.png](/assets/Editor_img/image%204.png)
 
 According to Google Gemini, there is a file `hibernate.cfg.xml` that contains database configuration settings for an xwiki database on the system. 
 
@@ -194,7 +197,7 @@ xwiki@editor:/$ find / -name hibernate.cfg.xml 2>/dev/null
 
 ## Database Credentials Discovered
 
-![image.png](Editor/image%205.png)
+![image.png](/assets/Editor_img/image%205.png)
 
 We do get a set of database credentials:
 
@@ -204,7 +207,7 @@ xwiki : the......99
 
 From this point, I was able to gain access into the `mariadb mysql` server using the discovered creds and there was nothing of interest. So, I backed up to see what users were on the system via `/etc/passwd` and found another user `oliver`
 
-![image.png](Editor/image%206.png)
+![image.png](/assets/Editor_img/image%206.png)
 
 ---
 
@@ -214,7 +217,7 @@ From this point, I was able to gain access into the `mariadb mysql` server using
 
 It seems that the password we discovered also belonged to the user `oliver`
 
-![image.png](Editor/image%207.png)
+![image.png](/assets/Editor_img/image%207.png)
 
 ** You can grab the user flag here **
 
@@ -230,7 +233,7 @@ Sorry, user oliver may not run sudo on editor.
 
 I decided to run `linpeas` to see what the output tells us:
 
-![image.png](Editor/image%208.png)
+![image.png](/assets/Editor_img/image%208.png)
 
 Now, this is very interesting. 
 
@@ -357,7 +360,7 @@ and execute the `ndsudo` command and call the correct `nvme` command as follows:
 
 You should be put in a `root` shell!!
 
-![image.png](Editor/image%209.png)
+![image.png](/assets/Editor_img/image%209.png)
 
 You can grab the root flag here!
 
