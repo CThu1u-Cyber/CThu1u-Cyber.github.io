@@ -7,7 +7,7 @@ image:
   path: /assets/img/posts/phantom_banner.png
 ---
 
-![image.png](Phantom%20vl/image.png)
+![image.png](/assets/img/image.png)
 
 # Scope Details
 
@@ -141,7 +141,7 @@ OTQxNAolJUVPRgo=' | base64 -d >> welcome_template.pdf
 
 ```
 
-![image.png](Phantom%20vl/image%201.png)
+![image.png](/assets/img/image%201.png)
 
 ## Listing Usernames
 
@@ -396,13 +396,13 @@ We run a password spray against our list of users with the new password. And we 
 └─# nxc smb dc.phantom.vl -u users.txt -p 'g..........c' --continue-on-success
 ```
 
-![image.png](Phantom%20vl/image%202.png)
+![image.png](/assets/img/image%202.png)
 
 # Initial Compromise
 
-![image.png](Phantom%20vl/image%203.png)
+![image.png](/assets/img/image%203.png)
 
-![image.png](Phantom%20vl/image%204.png)
+![image.png](/assets/img/image%204.png)
 
 # Post Compromise
 
@@ -462,7 +462,7 @@ Unfortunate since we can’t get our hands on an SPN
 
 ## Hacktricks Blog: RBCD on SPNless Users
 
-![image.png](Phantom%20vl/image%205.png)
+![image.png](/assets/img/image%205.png)
 
 We obtain `wsilva` ’s TGT and the TGT session key
 
@@ -508,4 +508,4 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 
 # Machine Pwn3d!
 
-![image.png](Phantom%20vl/image%206.png)
+![image.png](/assets/img/image%206.png)
