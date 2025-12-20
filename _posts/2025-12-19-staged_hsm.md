@@ -424,7 +424,10 @@ Registry AutoLogon Found
 ```
 
 We find a set of credentials!
-
+```bash
+p.richardson
+^[REDACTED]6
+```
 We can attempt to login to the sql server again using `p.richardson`'s creds.
 
 # SQL Server Login as `p.richardson`
