@@ -1,5 +1,11 @@
-# Staged
-
+---
+title: "Staged — Hacksmarter"
+description: MEDIUM Difficulty
+date: 2025-12-19 12:00:00 +0000
+categories: [Writeups, Hacksmarter Labs]
+tags: [Windows, Linux, AV Bypass, SQL Server, Sliver, Lateral, Chain]
+image:
+  path: /assets/staged_img/staged_banner.png
 ---
 
 # Scope & Objective
