@@ -1,5 +1,5 @@
 ---
-title: "Welcome — Hacksmarter Writeup"
+title: "Welcome — Hacksmarter"
 description: EASY Difficulty
 date: 2025-11-06 12:00:00 +0000
 categories: [Writeups, Hacksmarter Labs]
