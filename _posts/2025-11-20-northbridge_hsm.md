@@ -1,5 +1,5 @@
 ---
-title: "NorthBridge Systems — Hacksmarter Writeup"
+title: "NorthBridge Systems — Hacksmarter"
 description: HARD Difficulty
 date: 2025-11-20 12:00:00 +0000
 categories: [Writeups, Hacksmarter Labs]
