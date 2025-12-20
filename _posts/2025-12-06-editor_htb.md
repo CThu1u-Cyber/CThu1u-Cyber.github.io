@@ -1,5 +1,5 @@
 ---
-title: "Editor — HackTheBox Writeup"
+title: "Editor — HackTheBox"
 description: EASY Difficulty
 date: 2025-12-06 12:00:00 +0000
 categories: [Writeups, HackTheBox]
